@@ -1,1 +1,115 @@
+const questions = [
+    "Are you sure?",
+    "Really sure?",
+    "Pretty please?",
+    "Please reconsider?",
+    "Just think about it one more time?",
+    "What if I ask nicely?",
+    "Pretty pretty please?",
+    "I even made a website for you",
+    "You are really going to press no again?",
+    "I think you misclicked",
+    "That did not feel like the right choice",
+    "Maybe try the other button?",
+    "But I really like you",
+    "Like... a lot a lot",
+    "You are my favourite person",
+    "Imagine how cute we would be though",
+    "I promise snacks and cuddles",
+    "Okay but seriously...",
+    "Last chance?",
+    "No :("
+];
+
+const yes = document.querySelector('button.yes');
+const no = document.querySelector('button.no');
+const gifs = document.querySelectorAll('.image');
+
+let index = 0;
+let hasCelebrated = false;
+
+no.addEventListener('click', function() {
+    if (index >= questions.length) return;
+
+    let font_size = window.getComputedStyle(yes).fontSize;
+    font_size = parseFloat(font_size);
+    font_size += 10;
+    yes.style.fontSize = `${font_size}px`;
+
+    no.innerText = questions[index];
+    index++;
+})
+
+function celebrate() {
+    if (hasCelebrated) return;
+    hasCelebrated = true;
+
+    for (let i = 1; i < gifs.length + 1; i++) {
+        const gif = gifs[i-1];
+        gif.classList.add(`image${i}`);
+    }
+
+    const confettiCount = 120;
+    const container = document.createElement("div");
+    container.style.position = "fixed";
+    container.style.top = "0";
+    container.style.left = "0";
+    container.style.width = "100%";
+    container.style.height = "100%";
+    container.style.pointerEvents = "none";
+    container.style.overflow = "hidden";
+    container.style.zIndex = "9999";
+    document.body.appendChild(container);
+
+    for (let i = 0; i < confettiCount; i++) {
+        const piece = document.createElement("div");
+
+        const size = Math.random() * 8 + 4;
+        piece.style.position = "absolute";
+        piece.style.width = size + "px";
+        piece.style.height = size + "px";
+        piece.style.left = "50vw";
+        piece.style.bottom = "0px";
+        piece.style.opacity = Math.random() + 0.5;
+
+        const colors = ["#ff4d6d","#ffd166","#06d6a0","#118ab2","#ef476f","#f78c6b"];
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+        const xSpread = Math.random() * 600 - 300;
+        const yHeight = Math.random() * -600 - 200;
+        const rotate = Math.random() * 720;
+
+        const duration = Math.random() * 1200 + 1200;
+
+        piece.animate(
+            [
+                { transform: `translate3d(0,0,0) rotate(0deg)` },
+                { transform: `translate3d(${xSpread}px, ${yHeight}px, 0) rotate(${rotate}deg)` }
+            ],
+            {
+                duration: duration,
+                easing: "cubic-bezier(.17,.67,.83,.67)",
+                fill: "forwards"
+            }
+        );
+
+        container.appendChild(piece);
+
+        setTimeout(() => {
+            piece.remove();
+        }, duration);
+    }
+
+    setTimeout(() => {
+        container.remove();
+    }, 4000);
+}
+
+yes.addEventListener('click', function() {
+    no.remove();
+    yes.style.fontSize = '20px';
+    yes.style.transform = 'scale(1.05)';
+    setTimeout(() => yes.style.transform = 'scale(1)', 150);
+    celebrate();
+})
 
